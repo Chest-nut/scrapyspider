@@ -17,6 +17,7 @@ class ScrapySpiderItem(scrapy.Item):
 class JobboleItem(scrapy.Item):
     title = scrapy.Field()
     create_date = scrapy.Field()
+    tags = scrapy.Field()
     url = scrapy.Field()
     url_id = scrapy.Field()
     front_img_url = scrapy.Field()
@@ -24,5 +25,4 @@ class JobboleItem(scrapy.Item):
     like_nums = scrapy.Field()
     bookmark_nums = scrapy.Field()
     comment_nums = scrapy.Field()
-    tags = scrapy.Field()
     content = scrapy.Field()

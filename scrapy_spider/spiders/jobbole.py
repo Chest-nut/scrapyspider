@@ -7,20 +7,21 @@ import scrapy
 from scrapy.http import Request
 
 from scrapy_spider.items import JobboleItem
-
+from scrapy_spider.utils import common
 
 class JobboleSpider(scrapy.Spider):
     name = 'jobbole'
     allowed_domains = ['blog.jobbole.com']
-    start_urls = ['http://blog.jobbole.com/all-posts/']
+    start_urls = ['http://blog.jobbole.com/all-posts/page/552/']
 
     def parse(self, response):
         post_nodes = response.css("#archive .floated-thumb .post-thumb a")
         for node in post_nodes:
             image_url = node.css("img::attr(src)").extract_first()
+
             url = node.css("::attr(href)").extract_first()
             yield Request(url=urljoin(response.url, url),
-                          meta={'front_img_url': image_url},
+                          meta={'front_img_url': urljoin(response.url, image_url)},
                           callback=self.parse_detial
                           )
 
@@ -44,13 +45,13 @@ class JobboleSpider(scrapy.Spider):
             like_nums = int(like_nums)
         bookmark_nums = response.xpath("//span[contains(@class, 'bookmark-btn')]\
                             /text()").extract_first().replace('收藏', '').strip()
-        if bookmark_nums is None:
+        if bookmark_nums is '': # 和 is None 有所区别
             bookmark_nums = 0
         else:
             bookmark_nums = int(bookmark_nums)
         comment_nums = response.xpath("//span[contains(@class, 'hide-on-480')]\
                             /text()").extract_first().replace('评论', '').strip()
-        if comment_nums is None:
+        if comment_nums is '':
             comment_nums = 0
         else:
             comment_nums = int(comment_nums)
@@ -62,14 +63,13 @@ class JobboleSpider(scrapy.Spider):
         item = JobboleItem()
         item['title'] = title
         item['create_date'] = create_date
+        item['tags'] = tags
         item['url'] = response.url
-        # item['url_id'] = url_id
+        item['url_id'] = common.get_md5(response.url)
         item['front_img_url'] = [front_img_url]
-        # item['front_img_path'] = front_img_path
         item['like_nums'] = like_nums
         item['bookmark_nums'] = bookmark_nums
         item['comment_nums'] = comment_nums
-        item['tags'] = tags
         item['content'] = content
 
         yield item
