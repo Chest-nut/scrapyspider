@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from _datetime import datetime
 import re
 from urllib.parse import urljoin
 
@@ -37,6 +38,10 @@ class JobboleSpider(scrapy.Spider):
         title = response.xpath("//div[@class='entry-header']/h1/text()").extract_first()
         create_date = response.xpath("//div[@class='entry-meta']\
                         /p/text()").extract_first().strip().replace(' ·', '')
+        try:
+            create_date = datetime.strptime(create_date, "%Y/%m/%d").date()
+        except Exception as e:
+            create_date = datetime.now().date()
         like_nums = response.xpath("//span[contains(@class, 'vote-post-up')]\
                                     /h10/text()").extract_first()
         if like_nums is None:

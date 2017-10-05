@@ -68,11 +68,19 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'scrapy_spider.pipelines.JsonExporterPipeline': 2,
-   'scrapy_spider.pipelines.JobboleImagesPipeline': 1,
+   # 'scrapy_spider.pipelines.JsonExporterPipeline': 2,
+   # 'scrapy_spider.pipelines.JobboleImagesPipeline': 1,
+   # 'scrapy_spider.pipelines.MySQLPipeline': 1,
+   'scrapy_spider.pipelines.MySQLTwistedPipeline': 1,
+
 }
 IMAGES_URLS_FIELD = 'front_img_url'
 IMAGES_STORE = str(Path(__file__).parent/'images')
+
+MYSQL_HOST = '127.0.0.1'
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = '123456'
+MYSQL_DB = 'se'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
