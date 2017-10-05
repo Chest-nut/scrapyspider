@@ -10,6 +10,7 @@ import codecs
 import json
 
 from scrapy.pipelines.images import ImagesPipeline
+from scrapy.exporters import JsonItemExporter
 
 class ScrapySpiderPipeline(object):
     def process_item(self, item, spider):
@@ -25,7 +26,7 @@ class JobboleImagesPipeline(ImagesPipeline):
         return item
 
 class JsonPipeline(object):
-    """将items保存为json文件"""
+    """自定义的json文件导出方法"""
 
     def __init__(self):
         self.file = codecs.open('article.json', 'w', encoding='utf-8')
@@ -38,3 +39,20 @@ class JsonPipeline(object):
     # spider结束时会自动调用该函数
     def spider_closed(self, spider):
         self.file.close()
+
+class JsonExporterPipeline(object):
+    """scrapy提供的json文件导出方法"""
+
+    def __init__(self):
+        self.file = open('articleExporter.json', 'wb')
+        self.exporter = JsonItemExporter(self.file, encoding='utf-8',
+                                         ensure_ascii=False)
+        self.exporter.start_exporting()
+
+    def close_spider(self, spider):
+        self.exporter.finish_exporting()
+        self.file.close()
+
+    def process_item(self, item, spider):
+        self.exporter.export_item(item)
+        return item
