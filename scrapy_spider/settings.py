@@ -9,6 +9,9 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+import os
+from pathlib import Path, PureWindowsPath
+
 BOT_NAME = 'scrapy_spider'
 
 SPIDER_MODULES = ['scrapy_spider.spiders']
@@ -64,9 +67,12 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'scrapy_spider.pipelines.ScrapySpiderPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'scrapy_spider.pipelines.ScrapySpiderPipeline': 300,
+   'scrapy_spider.pipelines.JobboleImagesPipeline': 1,
+}
+IMAGES_URLS_FIELD = 'front_img_url'
+IMAGES_STORE = str(Path(__file__).parent/'images')
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
