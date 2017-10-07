@@ -10,6 +10,10 @@ import requests
 
 session = requests.session()
 session.cookies = cookielib.LWPCookieJar(filename='cookies.txt')
+try:
+    session.cookies.load(ignore_discard=True)
+except:
+    print ("cookie未能加载")
 
 user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'
 headers = {
