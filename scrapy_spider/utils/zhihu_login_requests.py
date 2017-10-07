@@ -28,17 +28,6 @@ def is_login():
     else:
         return False
 
-def get_index():
-    try:
-        session.cookies.load(ignore_discard=True)
-        print('cookie加载成功')
-    except:
-        print('cookie加载失败！')
-    response = session.get('https://www.zhihu.com/', headers=headers)
-    with open('index.html', 'wb') as f:
-        f.write(response.text.encode('utf-8'))
-    print('ok')
-
 def get_xsrf():
     response = session.get('https://www.zhihu.com/', headers=headers)
     result = re.search('.*name="_xsrf" value="(.*?)"', response.text)
