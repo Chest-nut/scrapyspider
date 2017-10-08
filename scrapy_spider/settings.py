@@ -55,9 +55,11 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'scrapy_spider.middlewares.MyCustomDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   'scrapy_spider.middlewares.RandomUserAgentMiddleware': 543,
+   'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+}
+RANDOM_UA_TYPE = 'random'
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -81,6 +83,12 @@ MYSQL_HOST = '127.0.0.1'
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = '123456'
 MYSQL_DB = 'se'
+
+from pathlib import Path
+import sys
+
+PATH = str(Path(__file__).parent)
+sys.path.insert(0, PATH)
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
