@@ -5,8 +5,11 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
+import time
+
 from fake_useragent import UserAgent
 from scrapy import signals
+from scrapy.http import HtmlResponse
 
 from scrapy_spider.utils.crawlxiciIP import GetIP
 
@@ -79,3 +82,16 @@ class RandomProxyMiddleware(object):
     def process_request(self, request, spider):
         getip = GetIP()
         request.meta['proxy'] = getip.get_IP()
+
+class AJAXRequestMiddleware(object):
+
+    def process_request(self, request, spider):
+        if spider.name == 'jobbole':
+            spider.browser.get(request.url)
+            time.sleep(3)
+            print('访问:%s'%request.url)
+
+            return HtmlResponse(url=spider.browser.current_url,
+                                body=spider.browser.page_source,
+                                encoding='utf-8',
+                                request=request)

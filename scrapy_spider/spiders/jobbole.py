@@ -5,16 +5,31 @@ from urllib.parse import urljoin
 
 import scrapy
 from scrapy.http import Request
+from scrapy.xlib.pydispatch import dispatcher
+from scrapy import signals
+from selenium import webdriver
 
 from scrapy_spider.items import JobboleItem, JobboleItemLoader
 from scrapy_spider.utils import common
 
 class JobboleSpider(scrapy.Spider):
+
+    def __init__(self):
+        super(JobboleSpider, self).__init__()
+        self.browser = webdriver.Chrome(
+                executable_path=r'D:\tools\chromedriver_win32\chromedriver.exe')
+        dispatcher.connect(self.spider_closed, signal=signals.spider_closed)
+
+    def spider_closed(self):
+        print('爬虫执行结束')
+        self.browser.quit()
+
     name = 'jobbole'
     allowed_domains = ['blog.jobbole.com']
     start_urls = ['http://blog.jobbole.com/all-posts/page/552/']
 
     def parse(self, response):
+
         post_nodes = response.css("#archive .floated-thumb .post-thumb a")
         for node in post_nodes:
             image_url = node.css("img::attr(src)").extract_first()
