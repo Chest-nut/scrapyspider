@@ -14,15 +14,15 @@ from scrapy_spider.utils import common
 
 class JobboleSpider(scrapy.Spider):
 
-    def __init__(self):
-        super(JobboleSpider, self).__init__()
-        self.browser = webdriver.Chrome(
-                executable_path=r'D:\tools\chromedriver_win32\chromedriver.exe')
-        dispatcher.connect(self.spider_closed, signal=signals.spider_closed)
-
-    def spider_closed(self):
-        print('爬虫执行结束')
-        self.browser.quit()
+    # def __init__(self):
+    #     super(JobboleSpider, self).__init__()
+    #     self.browser = webdriver.Chrome(
+    #             executable_path=r'D:\tools\chromedriver_win32\chromedriver.exe')
+    #     dispatcher.connect(self.spider_closed, signal=signals.spider_closed)
+    #
+    # def spider_closed(self):
+    #     print('爬虫执行结束')
+    #     self.browser.quit()
 
     name = 'jobbole'
     allowed_domains = ['blog.jobbole.com']
@@ -96,6 +96,7 @@ class JobboleSpider(scrapy.Spider):
         item_loader.add_xpath('title', "//div[@class='entry-header']/h1/text()")
         item_loader.add_xpath('create_date', "//div[@class='entry-meta']/p/text()")
         item_loader.add_xpath('tags', "//div[@class='entry-meta']//a/text()")
+        # 如果add_xpath一个空值,不会添加到item中
         item_loader.add_xpath('like_nums',"//span[contains(@class,\
                                 'vote-post-up')]/h10/text()")
         item_loader.add_xpath('bookmark_nums',"//span[contains(@class,\

@@ -55,12 +55,12 @@ COOKIES_ENABLED = False
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {
-   # 'scrapy_spider.middlewares.RandomUserAgentMiddleware': 543,
-   'scrapy_spider.middlewares.AJAXRequestMiddleware': 1,
-   'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-}
-RANDOM_UA_TYPE = 'random'
+# DOWNLOADER_MIDDLEWARES = {
+#    # 'scrapy_spider.middlewares.RandomUserAgentMiddleware': 543,
+#    'scrapy_spider.middlewares.AJAXRequestMiddleware': 1,
+#    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+# }
+# RANDOM_UA_TYPE = 'random'
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -74,9 +74,10 @@ ITEM_PIPELINES = {
    # 'scrapy_spider.pipelines.JsonExporterPipeline': 2,
    # 'scrapy_spider.pipelines.JobboleImagesPipeline': 1,
    # 'scrapy_spider.pipelines.MySQLPipeline': 1,
-   'scrapy_spider.pipelines.MySQLTwistedPipeline': 1,
-
+   # 'scrapy_spider.pipelines.MySQLTwistedPipeline': 1,
+   'scrapy_spider.pipelines.ElasticSearchPipeline': 1,
 }
+
 IMAGES_URLS_FIELD = 'front_img_url'
 IMAGES_STORE = str(Path(__file__).parent/'images')
 

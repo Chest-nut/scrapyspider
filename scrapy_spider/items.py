@@ -55,7 +55,6 @@ class JobboleItem(scrapy.Item):
         output_processor=MapCompose(no_change)
     )
     front_img_path = scrapy.Field()
-
     like_nums = scrapy.Field(
         input_processor=MapCompose(get_nums)
     )

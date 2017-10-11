@@ -8,6 +8,7 @@
 
 import codecs
 import json
+from w3lib.html import remove_tags
 
 from twisted.enterprise import adbapi
 from scrapy.pipelines.images import ImagesPipeline
@@ -15,6 +16,7 @@ from scrapy.exporters import JsonItemExporter
 import MySQLdb
 import MySQLdb.cursors
 
+from scrapy_spider.models.es_type import JobboleArticleType
 
 class ScrapySpiderPipeline(object):
     def process_item(self, item, spider):
@@ -125,6 +127,26 @@ class MySQLTwistedPipeline(object):
                                     item['url'], item['url_id'])
                         )
 
+class ElasticSearchPipeline(object):
+
+    def process_item(self, item, spider):
+        article = JobboleArticleType()
+
+        article.title = item['title']
+        article.tags = item['tags']
+        article.content = remove_tags(item['content'])
+        article.url = item['url']
+        if 'front_img_url' in item:
+            article.front_img_url = item['front_img_url']
+        article.bookmark_nums = item['bookmark_nums']
+        article.like_nums = item.get('like_nums', 0)
+        article.comment_nums = item['comment_nums']
+        article.create_date = item['create_date']
+        article.meta.id = item['url_id']
+
+        article.save()
+
+        return item
 
 
 if __name__ == '__main__':
