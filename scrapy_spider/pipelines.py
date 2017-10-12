@@ -17,6 +17,9 @@ import MySQLdb
 import MySQLdb.cursors
 
 from scrapy_spider.models.es_type import JobboleArticleType
+from elasticsearch_dsl.connections import connections
+
+es = connections.create_connection(JobboleArticleType._doc_type.using)
 
 class ScrapySpiderPipeline(object):
     def process_item(self, item, spider):
@@ -129,6 +132,33 @@ class MySQLTwistedPipeline(object):
 
 class ElasticSearchPipeline(object):
 
+    def words_filter(self, words):
+        word_list = []
+        for word in words['tokens']:
+            if len(word['token']) > 1:
+                word_list.append(word['token'])
+        return word_list
+
+
+    def gen_suggests(self, index, info_tuple):
+        # 根据字符串生成搜索建议
+        used_words = set()
+        suggests = []
+        for text, weight in info_tuple:
+            if text:
+            # 调用es的analyer分析字符串
+                words = es.indices.analyze(index=index, analyzer='ik_max_word',
+                                   params={'filter':['lowcase']}, body=text)
+                analyzed_words = set(self.words_filter(words))
+                new_words = analyzed_words - used_words
+            else:
+                new_words = set()
+            if new_words:
+                suggests.append({'input':list(new_words),'weight':weight})
+                used_words = new_words | used_words
+
+        return suggests
+
     def process_item(self, item, spider):
         article = JobboleArticleType()
 
@@ -143,6 +173,8 @@ class ElasticSearchPipeline(object):
         article.comment_nums = item['comment_nums']
         article.create_date = item['create_date']
         article.meta.id = item['url_id']
+        article.suggest = self.gen_suggests(JobboleArticleType._doc_type.index,
+                                            ((article.title, 10), (article.tags, 7)))
 
         article.save()
 
