@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""爬取伯乐在线的文章信息"""
+
 from datetime import datetime
 from urllib.parse import urljoin
 
